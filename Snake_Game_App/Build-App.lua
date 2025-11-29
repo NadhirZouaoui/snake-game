@@ -1,4 +1,4 @@
-project "App"
+project "Snake_Game_App"
    kind "ConsoleApp"
    language "C++"
    cppdialect "C++20"
@@ -12,12 +12,12 @@ project "App"
       "Source",
 
 	  -- Include Core
-	  "../Core/Source"
+	  "../Snake_Game_Core/Source"
    }
 
    links
    {
-      "Core"
+      "Snake_Game_Core"
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")

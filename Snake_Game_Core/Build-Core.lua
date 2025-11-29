@@ -1,4 +1,4 @@
-project "Core"
+project "Snake_Game_Core"
    kind "StaticLib"
    language "C++"
    cppdialect "C++20"
