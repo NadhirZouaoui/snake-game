@@ -7,10 +7,23 @@ project "Snake_Game_Core"
 
    files { "Source/**.h", "Source/**.cpp" }
 
-   includedirs
-   {
-      "Source"
-   }
+    includedirs {
+        "Source",
+        "../Snake_Game_Core/Source",
+        "../External/SFML/include"
+    }
+    
+    libdirs {
+     "../External/SFML/lib"
+    }
+
+   
+    links {
+    "sfml-system",
+    "sfml-window",
+    "sfml-graphics"
+    }
+
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")

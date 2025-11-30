@@ -3,5 +3,5 @@
 namespace Core {
 
 	void PrintHelloWorld();
-
+	void CreateWindow();
 }

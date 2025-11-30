@@ -7,21 +7,35 @@ project "Snake_Game_App"
 
    files { "Source/**.h", "Source/**.cpp" }
 
-   includedirs
-   {
-      "Source",
-
-	  -- Include Core
-	  "../Snake_Game_Core/Source"
-   }
+    includedirs {
+        "Source",
+        "../Snake_Game_Core/Source",
+        "../External/SFML/include"
+    }
+    
+    libdirs {
+     "../External/SFML/lib"
+    }
 
    links
    {
-      "Snake_Game_Core"
+      "Snake_Game_Core",
+      "sfml-system",
+      "sfml-window",
+      "sfml-graphics"
    }
+
+
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
    objdir ("../Binaries/Intermediates/" .. OutputDir .. "/%{prj.name}")
+
+   
+      postbuildcommands {
+        -- Copy all SFML DLLs to build output
+        ("{COPY} ../External/SFML/bin/*.dll %{cfg.targetdir}")
+    }
+
 
    filter "system:windows"
        systemversion "latest"
