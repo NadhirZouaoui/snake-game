@@ -9,12 +9,11 @@ project "Snake_Game_Core"
 
     includedirs {
         "Source",
-        "../Snake_Game_Core/Source",
-        "../External/SFML/include"
+        "../External/SFML-dist/include"
     }
     
     libdirs {
-     "../External/SFML/lib"
+     "../External/SFML-dist/lib"
     }
 
    

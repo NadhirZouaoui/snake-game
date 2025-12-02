@@ -10,11 +10,11 @@ project "Snake_Game_App"
     includedirs {
         "Source",
         "../Snake_Game_Core/Source",
-        "../External/SFML/include"
+        "../External/SFML-dist/include"
     }
     
     libdirs {
-     "../External/SFML/lib"
+     "../External/SFML-dist/lib"
     }
 
    links
@@ -33,7 +33,7 @@ project "Snake_Game_App"
    
       postbuildcommands {
         -- Copy all SFML DLLs to build output
-        ("{COPY} ../External/SFML/bin/*.dll %{cfg.targetdir}")
+        ("{COPY} ../External/SFML-dist/bin/*.dll %{cfg.targetdir}")
     }
 
 
