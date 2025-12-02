@@ -1,18 +1,25 @@
 #include "Core/Core.h"
-
-
+#include<chrono>
+#include <thread>
 class Vector2
 {
 public:
 	int x, y;
-	bool operator==(auto& other) {
-		return this.x == other.x && this.y == other.y;
-	}
-	Vector2(): x(0), y(0) {};
+	Vector2() : x(0), y(0) {};
 	Vector2(int x, int y) {
 		this->x = x;
 		this->y = y;
 	}
+
+	bool operator==(const Vector2& other) {
+		return x == other.x && y == other.y;
+	}
+	Vector2& operator += (auto& other) {
+		x += other.x;
+		y += other.y;
+		return *this;
+	}
+	
 };
 
 enum Direction
@@ -35,8 +42,8 @@ private:
 
 public:
 	Snake() : m_speed(1),
-		m_direction(RIGHT),
 		m_length(3),
+		m_direction(RIGHT),
 		m_headPosition({0,0})
 	{}
 	
@@ -59,7 +66,31 @@ public:
 			return true;
 		return false;
 	}
-
+	void move() {
+		Vector2 step;
+		switch (m_direction)
+		{
+			case UP:
+				step = { 0, 1 };
+				break;
+			case DOWN:
+				step = { 0, -1 };
+				break;
+			case LEFT:
+				step = { -1, 0 };
+				break;
+			case RIGHT:
+				step = { 1, 0 };
+				break;
+			default:
+				break;
+		}
+		m_headPosition += step;
+		for (auto& bodyPartPosition : m_bodyPosition)
+		{
+			bodyPartPosition += step;
+		}
+	}
 };
 
 
