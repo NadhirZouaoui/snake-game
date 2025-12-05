@@ -2,20 +2,16 @@ project "Snake_Game_Core"
    kind "StaticLib"
    language "C++"
    cppdialect "C++20"
-   targetdir "Binaries/%{cfg.buildcfg}"
    staticruntime "off"
 
    files { "Source/**.h", "Source/**.cpp" }
 
     includedirs {
         "Source",
-        "../External/SFML-dist/include"
+        "../External/SFML/include"
     }
     
-    libdirs {
-     "../External/SFML-dist/lib"
-    }
-
+    libdirs { "../External/SFML/build/lib" }
    
     links {
     "sfml-system",

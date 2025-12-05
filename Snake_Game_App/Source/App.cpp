@@ -1,6 +1,5 @@
 #include "Core/Core.h"
-#include<chrono>
-#include <thread>
+
 class Vector2
 {
 public:

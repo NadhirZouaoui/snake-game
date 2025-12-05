@@ -1,6 +1,7 @@
 # Directories
 .vs/
 Binaries/
+External/SFML/build/
 
 # Files
 *.vcxproj

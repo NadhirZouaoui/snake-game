@@ -2,7 +2,6 @@ project "Snake_Game_App"
    kind "ConsoleApp"
    language "C++"
    cppdialect "C++20"
-   targetdir "Binaries/%{cfg.buildcfg}"
    staticruntime "off"
 
    files { "Source/**.h", "Source/**.cpp" }
@@ -10,12 +9,10 @@ project "Snake_Game_App"
     includedirs {
         "Source",
         "../Snake_Game_Core/Source",
-        "../External/SFML-dist/include"
+        "../External/SFML/include"
     }
-    
-    libdirs {
-     "../External/SFML-dist/lib"
-    }
+
+    libdirs { "../External/SFML/build/lib" }
 
    links
    {
@@ -33,7 +30,7 @@ project "Snake_Game_App"
    
       postbuildcommands {
         -- Copy all SFML DLLs to build output
-        ("{COPY} ../External/SFML-dist/bin/*.dll %{cfg.targetdir}")
+        ("{COPY} ../External/SFML/build/bin/*.dll %{cfg.targetdir}")
     }
 
 

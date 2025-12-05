@@ -12,8 +12,8 @@ OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
 SFML_DIR = "External/SFML"
 SFML_INC = SFML_DIR .. "/include"
-SFML_LIB = SFML_DIR .. "/lib"
-SFML_BIN = SFML_DIR .. "/bin"
+SFML_LIB = SFML_DIR .. "/build/lib"
+SFML_BIN = SFML_DIR .. "/build/bin"
 
 group "Core"
 	include "Snake_Game_Core/Build-Core.lua"
