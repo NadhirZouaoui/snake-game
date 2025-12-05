@@ -60,12 +60,14 @@ public:
 	}
 	
 	bool collistionDetected() {
-		for (int i = m_tailIndex; i < m_headIndex - 1; i++)
+		int index = m_tailIndex;
+		while(index != m_headIndex)
 		{
-			if (m_headPosition == m_bodyArray[i])
+			if (m_headPosition == m_bodyArray[index])
 				return true;
+			index = (index + 1) % MAXSIZE;
 		}
-		return true;
+		return false;
 	}
 	
 	bool ateFood(Vector2 foodPosition) {
