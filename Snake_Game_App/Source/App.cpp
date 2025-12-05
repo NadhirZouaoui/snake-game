@@ -1,4 +1,6 @@
 #include "Core/Core.h"
+#include<array>
+#define MAXSIZE 256
 
 class Vector2
 {
@@ -33,18 +35,24 @@ enum Direction
 class Snake
 {
 private:
-	int m_speed, m_length;
+	int m_speed, m_length, m_tailIndex, m_headIndex;
 	Direction m_direction;
 	Vector2 m_headPosition;
-	std::vector<Vector2> m_bodyPosition{2};
+	std::array<Vector2, MAXSIZE> m_bodyArray;
 
 
 public:
 	Snake() : m_speed(1),
 		m_length(3),
 		m_direction(RIGHT),
-		m_headPosition({0,0})
-	{}
+		m_tailIndex(0),
+		m_headIndex(2)
+	{
+		m_bodyArray[0] = {-2, 0};
+		m_bodyArray[1] = {-1, 0};
+		m_bodyArray[2] = { 0, 0 };
+		m_headPosition = m_bodyArray[2];
+	}
 	
 	void incrementStats() {
 		this->m_speed++;
@@ -52,9 +60,9 @@ public:
 	}
 	
 	bool collistionDetected() {
-		for (auto& bodyPartPosition : m_bodyPosition)
+		for (int i = m_tailIndex; i < m_headIndex - 1; i++)
 		{
-			if (bodyPartPosition == m_headPosition)
+			if (m_headPosition == m_bodyArray[i])
 				return true;
 		}
 		return true;
@@ -85,10 +93,9 @@ public:
 				break;
 		}
 		m_headPosition += step;
-		for (auto& bodyPartPosition : m_bodyPosition)
-		{
-			bodyPartPosition += step;
-		}
+		m_headIndex = (m_headIndex == MAXSIZE - 1) ? 0 : m_headIndex + 1;
+		m_bodyArray[m_headIndex] = m_headPosition;
+		m_tailIndex = (m_tailIndex == MAXSIZE - 1) ? 0 : m_tailIndex + 1;
 	}
 };
 
