@@ -95,9 +95,9 @@ public:
 				break;
 		}
 		m_headPosition += step;
-		m_headIndex = (m_headIndex == MAXSIZE - 1) ? 0 : m_headIndex + 1;
+		m_headIndex = (m_headIndex + 1) % MAXSIZE;
 		m_bodyArray[m_headIndex] = m_headPosition;
-		m_tailIndex = (m_tailIndex == MAXSIZE - 1) ? 0 : m_tailIndex + 1;
+		m_tailIndex = (m_tailIndex + 1) % MAXSIZE;
 	}
 };
 
