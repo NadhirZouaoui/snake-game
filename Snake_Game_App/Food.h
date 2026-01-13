@@ -6,7 +6,7 @@ class Food
 private:
 	sf::Vector2i foodPosition;
 public:
-	void generateFood();
 	Food();
+	void generate();
 };
 

@@ -6,12 +6,17 @@
 #include <iostream>
 
 namespace Core {
+
+
 	void CreateWindow() {
-        sf::Window window(sf::VideoMode({ 800, 600 }), "My window");
+        sf::RenderWindow window(sf::VideoMode({ 700, 600 }), "My window");
+        sf::Texture backGroundtexture("../ressources/gameBackground.jpg");
+        sf::Sprite backGroundsprite(backGroundtexture);
 
         // run the program as long as the window is open
         while (window.isOpen())
         {
+            
             // check all the window's events that were triggered since the last iteration of the loop
             while (const std::optional event = window.pollEvent())
             {
@@ -19,6 +24,9 @@ namespace Core {
                 if (event->is<sf::Event::Closed>())
                     window.close();
             }
+            window.clear();
+            window.draw(backGroundsprite);
+            window.display();
         }
 	}
 
