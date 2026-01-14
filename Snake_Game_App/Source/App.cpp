@@ -4,5 +4,5 @@
 int main()
 {
 	Core::CreateWindow();
-	Core::PrintHelloWorld();
+	//Core::PrintHelloWorld();
 }

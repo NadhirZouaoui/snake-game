@@ -1,28 +1,40 @@
 #pragma once
 #include<array>
 #include <SFML/System/Vector2.hpp>
+#include "SFML/Graphics.hpp"
 #define MAXSIZE 256
 
 enum Direction
 {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
+	UP = 1,
+	DOWN = -1,
+	LEFT = -2,
+	RIGHT = 2,
+	STOP = 0
+};
+
+class SnakeHead {
+public:
+	sf::Texture texture;
+	sf::Sprite sprite;
+	SnakeHead();
+
 };
 
 class Snake
 {
-private:
+public:
 	int m_speed, m_length, m_tailIndex, m_headIndex;
 	Direction m_direction;
-	sf::Vector2i m_headPosition;
-	std::array<sf::Vector2i, MAXSIZE> m_bodyArray;
+	sf::Vector2f m_headPosition;
+	SnakeHead m_headObject;
+	std::array<sf::Vector2f, MAXSIZE> m_bodyArray;
 public:
 	Snake();
+	void setDirection(Direction direction);
 	void incrementStats();
 	bool collistionDetected();
-	bool ateFood(sf::Vector2i foodPosition);
+	bool ateFood(sf::Vector2f foodPosition);
 	void move();
 };
 
