@@ -17,13 +17,14 @@ Snake::Snake() :
 	m_length(3),
 	m_direction(RIGHT),
 	m_tailIndex(0),
-	m_headIndex(2),
+	m_headIndex(50),
 	m_headObject()
 {
-	m_bodyArray[0] = { -2, 0 };
-	m_bodyArray[1] = { -1, 0 };
-	m_bodyArray[2] = { 400, 350 };
-	m_headPosition = m_bodyArray[2];
+	for (size_t i = 0; i < 50; i++)
+	{
+		m_bodyArray[i] = sf::Vector2f(400 + i, 350);
+	}
+	m_headPosition = sf::Vector2f(450, 350);
 }
 
 void Snake::redirect(Direction newDirection) {

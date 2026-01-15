@@ -2,7 +2,7 @@
 #include<array>
 #include <SFML/System/Vector2.hpp>
 #include "SFML/Graphics.hpp"
-#define MAXSIZE 256
+#define MAXSIZE 2000
 
 enum Direction
 {

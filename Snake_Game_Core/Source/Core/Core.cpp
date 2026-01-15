@@ -45,7 +45,17 @@ namespace Core {
             window.clear();
             window.draw(backGroundsprite);
             snake.move();
+            int index = snake.m_tailIndex;
+            while (index != snake.m_headIndex) {
+                sf::CircleShape snakeBodyPart(30);
+                snakeBodyPart.setFillColor(sf::Color(3, 38, 11));
+                snakeBodyPart.setOrigin(sf::Vector2f(30, 30));
+                snakeBodyPart.setPosition(snake.m_bodyArray[index]);
+                window.draw(snakeBodyPart);
+                index = (index + 1) % MAXSIZE;
+            }
             window.draw(snake.m_headObject.sprite);
+
             window.display();
         }
         std::cout << snake.m_direction;
