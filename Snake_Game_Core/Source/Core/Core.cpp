@@ -11,7 +11,7 @@ namespace Core {
 
 	void CreateWindow() {
         sf::RenderWindow window(sf::VideoMode({ 980, 830 }), "My window");
-        window.setFramerateLimit(60);
+        window.setFramerateLimit(100);
         sf::Texture backGroundtexture("../ressources/gameBackground.jpg");
         sf::Sprite backGroundsprite(backGroundtexture);
         backGroundsprite.setScale(sf::Vector2f(1.4, 1.4));
@@ -27,15 +27,15 @@ namespace Core {
                 if (event->is<sf::Event::Closed>())
                     window.close();
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-                    snake.setDirection(RIGHT);
+                    snake.redirect(RIGHT);
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-                    snake.setDirection(UP);
+                    snake.redirect(UP);
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-                    snake.setDirection(LEFT);
+                    snake.redirect(LEFT);
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-                    snake.setDirection(DOWN);
+                    snake.redirect(DOWN);
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
-                    snake.setDirection(STOP);
+                    snake.redirect(STOP);
             }
             if (snake.collistionDetected())
             {

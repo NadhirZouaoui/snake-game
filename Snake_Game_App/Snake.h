@@ -12,7 +12,11 @@ enum Direction
 	RIGHT = 2,
 	STOP = 0
 };
-
+enum Sign
+{
+	POSITIVE = 1,
+	NEGATIVE = -1
+};
 class SnakeHead {
 public:
 	sf::Texture texture;
@@ -25,13 +29,14 @@ class Snake
 {
 public:
 	int m_speed, m_length, m_tailIndex, m_headIndex;
+	Sign m_rotationDirection;
 	Direction m_direction;
 	sf::Vector2f m_headPosition;
 	SnakeHead m_headObject;
 	std::array<sf::Vector2f, MAXSIZE> m_bodyArray;
 public:
 	Snake();
-	void setDirection(Direction direction);
+	void redirect(Direction direction);
 	void incrementStats();
 	bool collistionDetected();
 	bool ateFood(sf::Vector2f foodPosition);

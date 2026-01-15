@@ -1,4 +1,7 @@
 #include "Snake.h"
+#include<iostream>
+
+
 SnakeHead::SnakeHead():
 	texture(sf::Texture("../ressources/mouthCLosed.png")),
 	sprite(sf::Sprite(texture))
@@ -23,7 +26,24 @@ Snake::Snake() :
 	m_headPosition = m_bodyArray[2];
 }
 
-void Snake::setDirection(Direction newDirection) {
+void Snake::redirect(Direction newDirection) {
+	switch (newDirection)
+	{
+	case UP:
+		m_rotationDirection = (m_direction == LEFT) ? POSITIVE : NEGATIVE;
+		break;
+	case DOWN:
+		m_rotationDirection = (m_direction == RIGHT) ? POSITIVE : NEGATIVE;
+		break;
+	case LEFT:
+		m_rotationDirection = (m_direction == DOWN) ? POSITIVE : NEGATIVE;
+		break;
+	case RIGHT:
+		m_rotationDirection = (m_direction == UP) ? POSITIVE : NEGATIVE;
+		break;
+	default:
+		break;
+	}
 	if (newDirection != -m_direction)
 		m_direction = newDirection;
 }
@@ -47,6 +67,8 @@ bool Snake::collistionDetected() {
 }
 
 
+
+
 bool Snake::ateFood(sf::Vector2f foodPosition) {
 	if (m_headPosition == foodPosition)
 		return true;
@@ -54,30 +76,41 @@ bool Snake::ateFood(sf::Vector2f foodPosition) {
 }
 
 
+
+
 void Snake::move() {
 	sf::Vector2f step;
+	auto rotationDegree = m_headObject.sprite.getRotation().asDegrees();
+	auto targetAngleDgree = sf::degrees(270).asDegrees();
 	switch (m_direction)
 	{
 	case UP:
 		step = { 0, -(float)m_speed };
-		m_headObject.sprite.setRotation(sf::degrees(-90));
+		targetAngleDgree = sf::degrees(270).asDegrees();
+		if (abs(rotationDegree - targetAngleDgree) > 0.1f)
+			m_headObject.sprite.rotate(sf::degrees(10 * m_rotationDirection));
 		break;
 	case DOWN:
 		step = { 0, (float)m_speed };
-		m_headObject.sprite.setRotation(sf::degrees(90));
+		targetAngleDgree = sf::degrees(90).asDegrees();
+		if (abs(rotationDegree - targetAngleDgree) > 0.1f)
+			m_headObject.sprite.rotate(sf::degrees(10 * m_rotationDirection));
 		break;
 	case LEFT:
 		step = { -(float)m_speed, 0 };
-		m_headObject.sprite.setRotation(sf::degrees(180));
+		targetAngleDgree = sf::degrees(180).asDegrees();
+		if (abs(rotationDegree - targetAngleDgree) > 0.1f)
+			m_headObject.sprite.rotate(sf::degrees(10 * m_rotationDirection));
 		break;
 	case RIGHT:
 		step = { (float)m_speed, 0 };
-		m_headObject.sprite.setRotation(sf::degrees(0));
+		if (abs(rotationDegree) > 0.1f && abs(rotationDegree - 360)  > 0.1f)
+			m_headObject.sprite.rotate(sf::degrees(10 * m_rotationDirection));
+
 		break;
 	default:
 		return;
 	}
-
 	m_headPosition += step;
 	m_headObject.sprite.setPosition(m_headPosition);
 	m_headIndex = (m_headIndex + 1) % MAXSIZE;
