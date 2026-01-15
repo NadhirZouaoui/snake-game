@@ -26,8 +26,10 @@ namespace Core {
                 // "close requested" event: we close the window
                 if (event->is<sf::Event::Closed>())
                     window.close();
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
                     snake.redirect(RIGHT);
+                    snake.incrementStats();
+                }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
                     snake.redirect(UP);
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))

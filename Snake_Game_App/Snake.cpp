@@ -50,9 +50,11 @@ void Snake::redirect(Direction newDirection) {
 }
 
 void Snake::incrementStats() {
-	this->m_speed++;
+	this->m_speed +=0.05;
 	this->m_length++;
-	m_bodyArray[(m_tailIndex - 1) + MAXSIZE * (m_tailIndex == 0)] = m_bodyArray[m_tailIndex--];
+	for (int i = 0; i < 5; i++)
+		m_bodyArray[(m_tailIndex - 1) + MAXSIZE * (m_tailIndex == 0)] = m_bodyArray[m_tailIndex--];
+	
 }
 
 

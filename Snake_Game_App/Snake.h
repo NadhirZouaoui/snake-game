@@ -28,7 +28,8 @@ public:
 class Snake
 {
 public:
-	int m_speed, m_length, m_tailIndex, m_headIndex;
+	int m_length, m_tailIndex, m_headIndex;
+	float m_speed;
 	Sign m_rotationDirection;
 	Direction m_direction;
 	sf::Vector2f m_headPosition;
