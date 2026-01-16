@@ -18,6 +18,9 @@ enum Sign
 	POSITIVE = 1,
 	NEGATIVE = -1
 };
+
+
+
 class SnakeHead {
 public:
 	sf::Texture texture;
@@ -43,6 +46,6 @@ public:
 	void incrementStats();
 	bool collistionDetected();
 	bool ateFood(sf::Vector2f foodPosition);
-	bool isValidPosition();
+	void setMouthState(sf::Vector2f foodPosition);
 	void move();
 };

@@ -1,4 +1,5 @@
 #include "Core.h"
+#include "../../Snake_Game_App/source/Food.h"
 #include "../../Snake_Game_App/source/Snake.h"
 #include "SFML/Graphics.hpp"
 #include "SFML/System.hpp"
@@ -16,6 +17,7 @@ namespace Core {
         sf::Sprite backGroundsprite(backGroundtexture);
         backGroundsprite.setScale(sf::Vector2f(1.4, 1.4));
         Snake snake;
+        Food food;
         // run the program as long as the window is open
         while (window.isOpen())
         {
@@ -28,7 +30,6 @@ namespace Core {
                     window.close();
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
                     snake.redirect(RIGHT);
-                    snake.incrementStats();
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
                     snake.redirect(UP);
@@ -46,8 +47,16 @@ namespace Core {
             
             window.clear();
             window.draw(backGroundsprite);
+            window.draw(food.sprite);
             snake.move();
-            int index = snake.m_tailIndex;
+            snake.setMouthState(food.position);
+            if (snake.ateFood(food.position))
+            {
+                snake.incrementStats();
+                food.generate(snake);
+                window.draw(food.sprite);
+            }
+            int index = snake.m_tailIndex;            
             while (index != snake.m_headIndex) {
                 sf::CircleShape snakeBodyPart(30);
                 snakeBodyPart.setFillColor(sf::Color(3, 38, 11));
@@ -57,7 +66,7 @@ namespace Core {
                 index = (index + 1) % MAXSIZE;
             }
             window.draw(snake.m_headObject.sprite);
-
+            
             window.display();
         }
         std::cout << snake.m_direction;

@@ -1,5 +1,5 @@
 #include "Grid.h"
-
+#include <random>
 
 std::array<sf::Vector2f, 14 * 12> Grid::GRID;
 
@@ -17,4 +17,14 @@ bool Grid::isValidPosition(sf::Vector2f position){
 			return true;
 	}
 	return false;
+}
+
+sf::Vector2f Grid::generateRandomPosition() {
+	std::random_device rd;
+	std::mt19937 generator(rd());
+	std::uniform_int_distribution<> Xdistributor(1, 11);
+	std::uniform_int_distribution<> Ydistributor(1, 13);
+	int x = Xdistributor(generator);
+	int y = Ydistributor(generator);
+	return GRID[x + y * WIDTH];
 }

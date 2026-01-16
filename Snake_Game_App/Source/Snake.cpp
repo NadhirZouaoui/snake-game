@@ -75,12 +75,25 @@ bool Snake::collistionDetected() {
 
 
 bool Snake::ateFood(sf::Vector2f foodPosition) {
-	if (m_headPosition == foodPosition)
+	if (abs(m_headPosition.x - foodPosition.x) < 2.5 && abs(m_headPosition.y - foodPosition.y) < 2.5)
 		return true;
 	return false;
 }
 
+void Snake::setMouthState(sf::Vector2f foodPosition) {
+	if ((abs(m_headPosition.x - foodPosition.x) < 70 && abs(m_headPosition.y - foodPosition.y) < 70))
+	{
+		m_headObject.texture.loadFromFile("../ressources/mouthOpen.png");
+		m_headObject.sprite.setTexture(m_headObject.texture);
 
+	}
+	else
+	{
+		m_headObject.texture.loadFromFile("../ressources/mouthClosed.png");
+		m_headObject.sprite.setTexture(m_headObject.texture);
+
+	}
+}
 
 
 void Snake::move() {

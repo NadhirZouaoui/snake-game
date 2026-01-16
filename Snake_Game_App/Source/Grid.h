@@ -11,5 +11,6 @@ class Grid
 	Grid() = default;
 	static void initializeGrid();
 	static bool isValidPosition(sf::Vector2f position);
+	static sf::Vector2f generateRandomPosition();
 };
 
