@@ -2,6 +2,7 @@
 #include<array>
 #include <SFML/System/Vector2.hpp>
 #include "SFML/Graphics.hpp"
+#include "Grid.h"
 #define MAXSIZE 2000
 
 enum Direction
@@ -32,6 +33,7 @@ public:
 	float m_speed;
 	Sign m_rotationDirection;
 	Direction m_direction;
+	Direction m_previousDirection;
 	sf::Vector2f m_headPosition;
 	SnakeHead m_headObject;
 	std::array<sf::Vector2f, MAXSIZE> m_bodyArray;
@@ -41,7 +43,6 @@ public:
 	void incrementStats();
 	bool collistionDetected();
 	bool ateFood(sf::Vector2f foodPosition);
+	bool isValidPosition();
 	void move();
 };
-
-

@@ -16,15 +16,17 @@ Snake::Snake() :
 	m_speed(3),
 	m_length(3),
 	m_direction(RIGHT),
+	m_previousDirection(RIGHT),
 	m_tailIndex(0),
 	m_headIndex(50),
 	m_headObject()
 {
+	Grid::initializeGrid();
 	for (size_t i = 0; i < 50; i++)
 	{
-		m_bodyArray[i] = sf::Vector2f(400 + i, 350);
+		m_bodyArray[i] = sf::Vector2f(6 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2, 5 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2);
 	}
-	m_headPosition = sf::Vector2f(450, 350);
+	m_headPosition = sf::Vector2f(6 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2, 5 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2);
 }
 
 void Snake::redirect(Direction newDirection) {
@@ -85,7 +87,12 @@ void Snake::move() {
 	sf::Vector2f step;
 	auto rotationDegree = m_headObject.sprite.getRotation().asDegrees();
 	auto targetAngleDgree = sf::degrees(270).asDegrees();
-	switch (m_direction)
+	Direction currentDirection = m_previousDirection;
+	if (Grid::isValidPosition(m_headPosition))
+	{
+		currentDirection = m_direction;
+	}
+	switch (currentDirection)
 	{
 	case UP:
 		step = { 0, -(float)m_speed };
@@ -119,4 +126,5 @@ void Snake::move() {
 	m_headIndex = (m_headIndex + 1) % MAXSIZE;
 	m_bodyArray[m_headIndex] = m_headPosition;
 	m_tailIndex = (m_tailIndex + 1) % MAXSIZE;
+	m_previousDirection = currentDirection;
 }

@@ -1,5 +1,5 @@
 #include "Core.h"
-#include "../../Snake_Game_App/Snake.h"
+#include "../../Snake_Game_App/source/Snake.h"
 #include "SFML/Graphics.hpp"
 #include "SFML/System.hpp"
 #include "SFML/Window.hpp"
