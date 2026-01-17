@@ -1,15 +1,27 @@
 #include "Core.h"
 #include "../../Snake_Game_App/source/Food.h"
 #include "../../Snake_Game_App/source/Snake.h"
-#include "SFML/Graphics.hpp"
-#include "SFML/System.hpp"
-#include "SFML/Window.hpp"
+
 
 #include <iostream>
 
 namespace Core {
 
 
+    Text::Text(std::string fontUrl, std::string message, float size, sf::Vector2f position, sf::Color color) :
+        m_fontObject(sf::Font(fontUrl)),
+        m_textObject(sf::Text(m_fontObject))
+    {
+        m_textObject.setString(message);
+        m_textObject.setCharacterSize(size);
+        m_textObject.setPosition(position);
+        m_textObject.setFillColor(color);
+    }
+    void Text::setString(std::string message) {
+        this->m_textObject.setString(message);
+    }
+
+    //-----------------------------------------------------------------------------------------------------
 	void CreateWindow() {
         sf::RenderWindow window(sf::VideoMode({ 980, 830 }), "My window");
         window.setFramerateLimit(100);
@@ -18,44 +30,18 @@ namespace Core {
         backGroundsprite.setScale(sf::Vector2f(1.4, 1.4));
 
         Snake* snake = new Snake();
-
         Food food;
-
-        sf::Font font("../ressources/Hexaplex.otf");
-        sf::Text score(font);
-        score.setString("SCORE : " + snake->m_score);
-        score.setCharacterSize(60);
-        score.setPosition(sf::Vector2(5.5f * 70.f, 0.f));
-        score.setFillColor(sf::Color::Black);
-
-        sf::Font fontGameOver("../ressources/blodyFont.ttf");
-        sf::Text textGameOver(fontGameOver);
-        textGameOver.setString("THE HERO HAVE FALLEN . . .");
-        textGameOver.setCharacterSize(55);
-        textGameOver.setPosition(sf::Vector2(1.f * 70.f, 175.f));
-        textGameOver.setFillColor(sf::Color::Red);
-
-        
-        sf::Text instruction1(font);
-        instruction1.setString("press R to restart");
-        instruction1.setCharacterSize(35);
-        instruction1.setPosition(sf::Vector2(1.f * 70.f, 7 * 70.f));
-        instruction1.setFillColor(sf::Color::White);
-
-        sf::Text instruction2(font);
-        instruction2.setString("press ESC to quit");
-        instruction2.setCharacterSize(35);
-        instruction2.setPosition(sf::Vector2(1.f * 70.f, 8 * 70.f));
-        instruction2.setFillColor(sf::Color::White);
-
-
+        Text score("../ressources/Hexaplex.otf", "SCORE : " + snake->m_score, 60, sf::Vector2(5.5f * 70.f, 0.f), sf::Color::Black);
+        Text gameOverMessage("../ressources/blodyFont.ttf", "THE HERO HAS FALLEN . . .", 55, sf::Vector2(1.f * 70.f, 175.f), sf::Color::Red);
+        Text instruction1("../ressources/Hexaplex.otf", "press R to restart", 35, sf::Vector2(1.f * 70.f, 7 * 70.f), sf::Color::White);
+        Text instruction2("../ressources/Hexaplex.otf", "press ESC to quit", 35, sf::Vector2(1.f * 70.f, 8 * 70.f), sf::Color::White);
         bool gameOver = false;
         // run the program as long as the window is open
         while (window.isOpen())
         {
             window.clear();
             if (gameOver){
-                backGroundsprite.setColor(sf::Color(66, 66, 66));
+                backGroundsprite.setColor(sf::Color(100, 100, 100));
             }
             else
                 backGroundsprite.setColor(sf::Color(255, 255, 255));
@@ -66,10 +52,7 @@ namespace Core {
             int index = snake->m_tailIndex;
             while (index != snake->m_headIndex) {
                 sf::CircleShape snakeBodyPart(30);
-                if (gameOver)
-                    snakeBodyPart.setFillColor(sf::Color(0, 0, 0));
-                else
-                    snakeBodyPart.setFillColor(sf::Color(3, 38, 11));
+                snakeBodyPart.setFillColor(sf::Color(3, 38, 11));
                 snakeBodyPart.setOrigin(sf::Vector2f(30, 30));
                 snakeBodyPart.setPosition(snake->m_bodyArray[index]);
                 window.draw(snakeBodyPart);
@@ -77,14 +60,15 @@ namespace Core {
             }
             //drawing the head
             if (gameOver) {
-                snake->m_headObject.sprite.setColor(sf::Color(66, 66, 66));
-                window.draw(textGameOver);
-                window.draw(instruction1);
-                window.draw(instruction2);
+                snake->m_headObject.texture.loadFromFile("../ressources/dead.png");
+                snake->m_headObject.sprite.setTexture(snake->m_headObject.texture);
+                window.draw(gameOverMessage.m_textObject);
+                window.draw(instruction1.m_textObject);
+                window.draw(instruction2.m_textObject);
             }
             window.draw(snake->m_headObject.sprite);
             //drawing the score
-            window.draw(score);
+            window.draw(score.m_textObject);
             if (!snake->collistionDetected())
             {
                 snake->move();
