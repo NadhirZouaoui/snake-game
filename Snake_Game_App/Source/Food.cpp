@@ -20,7 +20,7 @@ void Food::generate(Snake avoidedObject) {
 		isValidPosition = true;
 		{
 			while (index != avoidedObject.m_headIndex && isValidPosition) {
-				if (abs(avoidedObject.m_bodyArray[index].x - randomPosition.x) < 2.5 && abs(avoidedObject.m_bodyArray[index].y - randomPosition.y) < 2.5)
+				if (abs(avoidedObject.m_bodyArray[index].x - randomPosition.x) < 5 && abs(avoidedObject.m_bodyArray[index].y - randomPosition.y) < 5)
 				{
 					isValidPosition = false;
 				}
@@ -29,6 +29,5 @@ void Food::generate(Snake avoidedObject) {
 		}
 	}
 	position = randomPosition;
-	std::cout << position.x <<" --- " << position.y << '\n';
 	sprite.setPosition(position);
 }

@@ -1,7 +1,6 @@
 #include "Snake.h"
 #include<iostream>
 
-
 SnakeHead::SnakeHead():
 	texture(sf::Texture("../ressources/mouthCLosed.png")),
 	sprite(sf::Sprite(texture))
@@ -13,8 +12,8 @@ SnakeHead::SnakeHead():
 
 
 Snake::Snake() :
-	m_speed(3),
-	m_length(3),
+	m_speed(4),
+	m_length(0),
 	m_direction(RIGHT),
 	m_previousDirection(RIGHT),
 	m_tailIndex(0),
@@ -24,7 +23,7 @@ Snake::Snake() :
 	Grid::initializeGrid();
 	for (size_t i = 0; i < 50; i++)
 	{
-		m_bodyArray[i] = sf::Vector2f(6 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2, 5 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2);
+		m_bodyArray[i] = sf::Vector2f(-1.f, -1.f);
 	}
 	m_headPosition = sf::Vector2f(6 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2, 5 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2);
 }
@@ -54,7 +53,8 @@ void Snake::redirect(Direction newDirection) {
 void Snake::incrementStats() {
 	this->m_speed +=0.05;
 	this->m_length++;
-	for (int i = 0; i < 5; i++)
+	this->m_score = std::to_string(m_length);
+	for (int i = 0; i < 8; i++)
 		m_bodyArray[(m_tailIndex - 1) + MAXSIZE * (m_tailIndex == 0)] = m_bodyArray[m_tailIndex--];
 	
 }
@@ -62,9 +62,11 @@ void Snake::incrementStats() {
 
 bool Snake::collistionDetected() {
 	int index = m_tailIndex;
-	while (index != m_headIndex)
+	while ((index + 40) % MAXSIZE != m_headIndex)
 	{
-		if (m_headPosition == m_bodyArray[index])
+		if (abs(m_headPosition.x - m_bodyArray[index].x) < 5 && abs(m_headPosition.y - m_bodyArray[index].y) < 5 ||
+			m_headPosition.x < Grid::CELL_SIZE * 1 || m_headPosition.x > Grid::CELL_SIZE * 13 ||
+			m_headPosition.y < Grid::CELL_SIZE * 1 || m_headPosition.y > Grid::CELL_SIZE * 11)
 			return true;
 		index = (index + 1) % MAXSIZE;
 	}
@@ -75,7 +77,7 @@ bool Snake::collistionDetected() {
 
 
 bool Snake::ateFood(sf::Vector2f foodPosition) {
-	if (abs(m_headPosition.x - foodPosition.x) < 2.5 && abs(m_headPosition.y - foodPosition.y) < 2.5)
+	if (abs(m_headPosition.x - foodPosition.x) < 5 && abs(m_headPosition.y - foodPosition.y) < 5)
 		return true;
 	return false;
 }

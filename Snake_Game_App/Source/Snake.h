@@ -3,6 +3,8 @@
 #include <SFML/System/Vector2.hpp>
 #include "SFML/Graphics.hpp"
 #include "Grid.h"
+#include<string>
+
 #define MAXSIZE 2000
 
 enum Direction
@@ -33,6 +35,7 @@ class Snake
 {
 public:
 	int m_length, m_tailIndex, m_headIndex;
+	std::string m_score;
 	float m_speed;
 	Sign m_rotationDirection;
 	Direction m_direction;
