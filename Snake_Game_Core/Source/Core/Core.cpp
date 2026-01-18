@@ -1,14 +1,10 @@
 #include "Core.h"
-#include "../../Snake_Game_App/source/Food.h"
-#include "../../Snake_Game_App/source/Snake.h"
-
 
 #include <iostream>
 
-namespace Core {
 
-
-    Text::Text(std::string fontUrl, std::string message, float size, sf::Vector2f position, sf::Color color) :
+    // class textObject Definition:
+    Core::TextObject::TextObject(std::string fontUrl, std::string message, float size, sf::Vector2f position, sf::Color color) :
         m_fontObject(sf::Font(fontUrl)),
         m_textObject(sf::Text(m_fontObject))
     {
@@ -17,107 +13,61 @@ namespace Core {
         m_textObject.setPosition(position);
         m_textObject.setFillColor(color);
     }
-    void Text::setString(std::string message) {
+    void Core::TextObject::setString(std::string message) {
         this->m_textObject.setString(message);
     }
 
-    //-----------------------------------------------------------------------------------------------------
-	void CreateWindow() {
-        sf::RenderWindow window(sf::VideoMode({ 980, 830 }), "My window");
-        window.setFramerateLimit(100);
-        sf::Texture backGroundtexture("../ressources/gameBackground.jpg");
-        sf::Sprite backGroundsprite(backGroundtexture);
-        backGroundsprite.setScale(sf::Vector2f(1.4, 1.4));
+    void Core::TextObject::render(sf::RenderWindow& window) {
+        window.draw(m_textObject);
+    }
+    
 
-        Snake* snake = new Snake();
-        Food food;
-        Text score("../ressources/Hexaplex.otf", "SCORE : " + snake->m_score, 60, sf::Vector2(5.5f * 70.f, 0.f), sf::Color::Black);
-        Text gameOverMessage("../ressources/blodyFont.ttf", "THE HERO HAS FALLEN . . .", 55, sf::Vector2(1.f * 70.f, 175.f), sf::Color::Red);
-        Text instruction1("../ressources/Hexaplex.otf", "press R to restart", 35, sf::Vector2(1.f * 70.f, 7 * 70.f), sf::Color::White);
-        Text instruction2("../ressources/Hexaplex.otf", "press ESC to quit", 35, sf::Vector2(1.f * 70.f, 8 * 70.f), sf::Color::White);
-        bool gameOver = false;
-        // run the program as long as the window is open
-        while (window.isOpen())
-        {
-            window.clear();
-            if (gameOver){
-                backGroundsprite.setColor(sf::Color(100, 100, 100));
-            }
-            else
-                backGroundsprite.setColor(sf::Color(255, 255, 255));
+    //class imageObject Definition:
+    Core::imageObject::imageObject(std::string imageUrl, sf::Vector2f scale, sf::Vector2f position) :
+        m_texture(sf::Texture(imageUrl)),
+        m_sprite(sf::Sprite(m_texture))
+    {
+        m_sprite.setOrigin(m_sprite.getLocalBounds().getCenter());
+        m_sprite.setScale(scale);
+        m_sprite.setPosition(position);
+    }
 
-            window.draw(backGroundsprite);
-            window.draw(food.sprite);
-            //drawing the snake's body
-            int index = snake->m_tailIndex;
-            while (index != snake->m_headIndex) {
-                sf::CircleShape snakeBodyPart(30);
-                snakeBodyPart.setFillColor(sf::Color(3, 38, 11));
-                snakeBodyPart.setOrigin(sf::Vector2f(30, 30));
-                snakeBodyPart.setPosition(snake->m_bodyArray[index]);
-                window.draw(snakeBodyPart);
-                index = (index + 1) % MAXSIZE;
-            }
-            //drawing the head
-            if (gameOver) {
-                snake->m_headObject.texture.loadFromFile("../ressources/dead.png");
-                snake->m_headObject.sprite.setTexture(snake->m_headObject.texture);
-                window.draw(gameOverMessage.m_textObject);
-                window.draw(instruction1.m_textObject);
-                window.draw(instruction2.m_textObject);
-            }
-            window.draw(snake->m_headObject.sprite);
-            //drawing the score
-            window.draw(score.m_textObject);
-            if (!snake->collistionDetected())
-            {
-                snake->move();
 
-                snake->setMouthState(food.position);
+    Core::imageObject::imageObject(std::string imageUrl, sf::Vector2f scale) :
+        m_texture(sf::Texture(imageUrl)),
+        m_sprite(sf::Sprite(m_texture))
+    {
+        m_sprite.setScale(scale);
+    }
 
-                if (snake->ateFood(food.position))
-                {
-                    snake->incrementStats();
-                    food.generate(*snake);
-                    window.draw(food.sprite);
-                    score.setString("SCORE : " + snake->m_score);
 
-                }
-            }
-            else 
-                gameOver = true;
+    void Core::imageObject::setImage(std::string imageUrl) {
+        m_texture.loadFromFile(imageUrl);
+        m_sprite.setTexture(m_texture);
+    }
+    void Core::imageObject::setSize(sf::Vector2f scale) {
+        m_sprite.setScale(scale);
+    }
+    void Core::imageObject::setPosition(sf::Vector2f position) {
+        m_sprite.setPosition(position);
+    }
+    void Core::imageObject::setColor(sf::Color color) {
+        m_sprite.setColor(color);
+    }
+    void Core::imageObject::render(sf::RenderWindow& window) {
+        window.draw(m_sprite);
+    }
 
-            // check all the window's events that were triggered since the last iteration of the loop
-            while (const std::optional event = window.pollEvent())
-            {
-                // "close requested" event: we close the window
-                if (event->is<sf::Event::Closed>() || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+    void Core::run() {
+        sf::RenderWindow window(sf::VideoMode({ 800, 600 }), "SFML 3 Window");
+        while (window.isOpen()) {
+            while (const std::optional event = window.pollEvent()) {
+                // Check if the user clicked the 'X' to close the window
+                if (event->is<sf::Event::Closed>()) {
                     window.close();
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
-                    snake->redirect(RIGHT);
-                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
-                    snake->redirect(UP);
-                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
-                    snake->redirect(LEFT);
-                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
-                    snake->redirect(DOWN);
-                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P))
-                    snake->redirect(STOP);
-                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R)) {
-                    delete snake;
-                    snake = new Snake();
-                    gameOver = false;
                 }
             }
+            window.clear(sf::Color::Black);
             window.display();
         }
-        delete snake;
-	}
-
-	void PrintHelloWorld()
-	{
-		std::cout << "Hello World!\n";
-		std::cin.get();
-	}
-
-}
+    }

@@ -1,0 +1,10 @@
+#define EPSILON_FOR_PIXELS 5
+#define EPSILON_FOR_FPS 0.1f
+#define INITIAL_LENGTH 8
+#define GROTH_AFTER_EATING 8
+#define WINDOW_WIDTH 980
+#define WINDOW_HEIGHT 830
+
+
+
+

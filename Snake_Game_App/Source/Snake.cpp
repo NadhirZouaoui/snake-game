@@ -1,31 +1,23 @@
 #include "Snake.h"
 #include<iostream>
 
-SnakeHead::SnakeHead():
-	texture(sf::Texture("../ressources/mouthCLosed.png")),
-	sprite(sf::Sprite(texture))
-{
-	sprite.setScale(sf::Vector2f(0.3, 0.3));
-	sprite.setPosition(sf::Vector2f(6 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2, 5 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2));
-	sprite.setOrigin(sprite.getLocalBounds().getCenter());
-}
+
 
 
 Snake::Snake() :
+	m_isAlive(true),
 	m_speed(4),
 	m_length(0),
 	m_direction(STOP),
 	m_previousDirection(RIGHT),
 	m_tailIndex(0),
 	m_headIndex(50),
-	m_headObject()
+	m_head("ressources/mouthCLosed.png", sf::Vector2f(0.3, 0.3))
 {
 	Grid::initializeGrid();
-	for (size_t i = 0; i < 50; i++)
-	{
-		m_bodyArray[i] = sf::Vector2f(5 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2 + i, 5 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2);
-	}
 	m_headPosition = sf::Vector2f(6 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2, 5 * Grid::CELL_SIZE + Grid::CELL_SIZE / 2);
+	m_head.setPosition(m_headPosition);
+	m_head.m_sprite.setOrigin(m_head.m_sprite.getLocalBounds().getCenter());
 }
 
 void Snake::redirect(Direction newDirection) {
@@ -54,8 +46,8 @@ void Snake::incrementStats() {
 	this->m_speed +=0.05;
 	this->m_length++;
 	this->m_score = std::to_string(m_length);
-	for (int i = 0; i < 8; i++)
-		m_bodyArray[(m_tailIndex - 1) + MAXSIZE * (m_tailIndex == 0)] = m_bodyArray[m_tailIndex--];
+	for (int i = 0; i < GROTH_AFTER_EATING; i++)
+		m_bodyPositionsArray[(m_tailIndex - 1) + MAXSIZE * (m_tailIndex == 0)] = m_bodyPositionsArray[m_tailIndex--];
 	
 }
 
@@ -64,7 +56,7 @@ bool Snake::collistionDetected() {
 	int index = m_tailIndex;
 	while ((index + 40) % MAXSIZE != m_headIndex)
 	{
-		if (abs(m_headPosition.x - m_bodyArray[index].x) < 5 && abs(m_headPosition.y - m_bodyArray[index].y) < 5 ||
+		if (abs(m_headPosition.x - m_bodyPositionsArray[index].x) < EPSILON_FOR_PIXELS && abs(m_headPosition.y - m_bodyPositionsArray[index].y) < EPSILON_FOR_PIXELS ||
 			m_headPosition.x < Grid::CELL_SIZE * 1 || m_headPosition.x > Grid::CELL_SIZE * 13 ||
 			m_headPosition.y < Grid::CELL_SIZE * 1 || m_headPosition.y > Grid::CELL_SIZE * 11)
 			return true;
@@ -77,30 +69,59 @@ bool Snake::collistionDetected() {
 
 
 bool Snake::ateFood(sf::Vector2f foodPosition) {
-	if (abs(m_headPosition.x - foodPosition.x) < 10 && abs(m_headPosition.y - foodPosition.y) < 10)
+	bool xPointsTooClose = abs(m_headPosition.x - foodPosition.x) < 2 * EPSILON_FOR_PIXELS;
+	bool yPointsTooClose = abs(m_headPosition.y - foodPosition.y) < 2 * EPSILON_FOR_PIXELS;
+	if (xPointsTooClose && yPointsTooClose)
 		return true;
 	return false;
 }
 
-void Snake::setMouthState(sf::Vector2f foodPosition) {
-	if ((abs(m_headPosition.x - foodPosition.x) < 70 && abs(m_headPosition.y - foodPosition.y) < 70))
+void Snake::setState(sf::Vector2f foodPosition) {
+	bool xPointsNear = abs(m_headPosition.x - foodPosition.x) < 70;
+	bool yPointsNear = abs(m_headPosition.y - foodPosition.y) < 70;
+	if (xPointsNear && yPointsNear)
 	{
-		m_headObject.texture.loadFromFile("../ressources/mouthOpen.png");
-		m_headObject.sprite.setTexture(m_headObject.texture);
+		m_head.m_texture.loadFromFile("ressources/mouthOpen.png");
+		m_head.m_sprite.setTexture(m_head.m_texture);
 
 	}
 	else
 	{
-		m_headObject.texture.loadFromFile("../ressources/mouthClosed.png");
-		m_headObject.sprite.setTexture(m_headObject.texture);
+		m_head.m_texture.loadFromFile("ressources/mouthClosed.png");
+		m_head.m_sprite.setTexture(m_head.m_texture);
 
+	}
+	if (!m_isAlive)
+	{
+		m_head.m_texture.loadFromFile("ressources/dead.png");
+		m_head.m_sprite.setTexture(m_head.m_texture);
 	}
 }
 
 
+void Snake::renderBody(sf::RenderWindow& window) {
+	int index = m_tailIndex;
+	while (index != m_headIndex) {
+		sf::CircleShape snakeBodyPart(30);
+		snakeBodyPart.setOrigin(sf::Vector2f(30, 30));
+		snakeBodyPart.setPosition(m_bodyPositionsArray[index]);
+		snakeBodyPart.setFillColor(sf::Color(3, 38, 11));
+		window.draw(snakeBodyPart);
+		index = (index + 1) % MAXSIZE;
+	}
+}
+
+void Snake::render(sf::RenderWindow& window) {
+	renderBody(window);
+	m_head.render(window);
+}
+
+
+
+
 void Snake::move() {
 	sf::Vector2f step;
-	auto rotationDegree = m_headObject.sprite.getRotation().asDegrees();
+	auto rotationDegree = m_head.m_sprite.getRotation().asDegrees();
 	auto targetAngleDgree = sf::degrees(270).asDegrees();
 	Direction currentDirection = m_previousDirection;
 	if (Grid::isValidPosition(m_headPosition))
@@ -112,34 +133,36 @@ void Snake::move() {
 	case UP:
 		step = { 0, -(float)m_speed };
 		targetAngleDgree = sf::degrees(270).asDegrees();
-		if (abs(rotationDegree - targetAngleDgree) > 0.1f)
-			m_headObject.sprite.rotate(sf::degrees(10 * m_rotationDirection));
+		if (abs(rotationDegree - targetAngleDgree) > EPSILON_FOR_FPS)
+			m_head.m_sprite.rotate(sf::degrees(10 * m_rotationDirection));
 		break;
 	case DOWN:
 		step = { 0, (float)m_speed };
 		targetAngleDgree = sf::degrees(90).asDegrees();
-		if (abs(rotationDegree - targetAngleDgree) > 0.1f)
-			m_headObject.sprite.rotate(sf::degrees(10 * m_rotationDirection));
+		if (abs(rotationDegree - targetAngleDgree) > EPSILON_FOR_FPS)
+			m_head.m_sprite.rotate(sf::degrees(10 * m_rotationDirection));
 		break;
 	case LEFT:
 		step = { -(float)m_speed, 0 };
 		targetAngleDgree = sf::degrees(180).asDegrees();
-		if (abs(rotationDegree - targetAngleDgree) > 0.1f)
-			m_headObject.sprite.rotate(sf::degrees(10 * m_rotationDirection));
+		if (abs(rotationDegree - targetAngleDgree) > EPSILON_FOR_FPS)
+			m_head.m_sprite.rotate(sf::degrees(10 * m_rotationDirection));
 		break;
 	case RIGHT:
 		step = { (float)m_speed, 0 };
-		if (abs(rotationDegree) > 0.1f && abs(rotationDegree - 360)  > 0.1f)
-			m_headObject.sprite.rotate(sf::degrees(10 * m_rotationDirection));
+		if (abs(rotationDegree) > 0.1f && abs(rotationDegree - 360)  > EPSILON_FOR_FPS)
+			m_head.m_sprite.rotate(sf::degrees(10 * m_rotationDirection));
 
 		break;
 	default:
 		return;
 	}
+
 	m_headPosition += step;
-	m_headObject.sprite.setPosition(m_headPosition);
+	m_head.m_sprite.setPosition(m_headPosition);
+	m_bodyPositionsArray[m_headIndex] = m_headPosition;
 	m_headIndex = (m_headIndex + 1) % MAXSIZE;
-	m_bodyArray[m_headIndex] = m_headPosition;
 	m_tailIndex = (m_tailIndex + 1) % MAXSIZE;
 	m_previousDirection = currentDirection;
 }
+

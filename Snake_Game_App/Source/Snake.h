@@ -3,9 +3,11 @@
 #include <SFML/System/Vector2.hpp>
 #include "SFML/Graphics.hpp"
 #include "Grid.h"
+#include"constants.h"
 #include<string>
+#include<Core/core.h>
 
-#define MAXSIZE 2000
+#define MAXSIZE 1000
 
 enum Direction
 {
@@ -22,18 +24,10 @@ enum Sign
 };
 
 
-
-class SnakeHead {
-public:
-	sf::Texture texture;
-	sf::Sprite sprite;
-	SnakeHead();
-
-};
-
 class Snake
 {
 public:
+	bool m_isAlive;
 	int m_length, m_tailIndex, m_headIndex;
 	std::string m_score;
 	float m_speed;
@@ -41,14 +35,16 @@ public:
 	Direction m_direction;
 	Direction m_previousDirection;
 	sf::Vector2f m_headPosition;
-	SnakeHead m_headObject;
-	std::array<sf::Vector2f, MAXSIZE> m_bodyArray;
+	Core::imageObject m_head;
+	std::array<sf::Vector2f, MAXSIZE> m_bodyPositionsArray;
 public:
 	Snake();
 	void redirect(Direction direction);
 	void incrementStats();
 	bool collistionDetected();
 	bool ateFood(sf::Vector2f foodPosition);
-	void setMouthState(sf::Vector2f foodPosition);
+	void setState(sf::Vector2f foodPosition);
+	void renderBody(sf::RenderWindow& window);
+	void render(sf::RenderWindow& window);
 	void move();
 };

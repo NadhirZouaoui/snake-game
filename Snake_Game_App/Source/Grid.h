@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/System/Vector2.hpp>
 #include <array>
+#include"constants.h"
 class Grid
 {
 	public:

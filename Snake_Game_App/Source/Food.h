@@ -3,14 +3,16 @@
 #include "SFML/Graphics.hpp"
 #include "Grid.h"
 #include "Snake.h"
+#include"constants.h"
 class Food
 {
 public:
-	sf::Vector2f position;
-	sf::Texture texture;
-	sf::Sprite sprite;
+	sf::Vector2f m_position;
+	sf::Texture m_texture;
+	sf::Sprite m_sprite;
 public:
 	Food();
 	void generate(Snake snake);
+	void render(sf::RenderWindow& window);
 };
 

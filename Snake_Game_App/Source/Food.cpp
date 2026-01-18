@@ -2,13 +2,13 @@
 #include<iostream>
 #include<cmath>
 Food::Food() :
-	texture("../ressources/food.png"),
-	sprite(texture)
+	m_texture("ressources/food.png"),
+	m_sprite(m_texture)
 {
-	position = sf::Vector2(315.f, 245.f);
-	sprite.setPosition(position);
-	sprite.setScale(sf::Vector2f(0.09, 0.09));
-	sprite.setOrigin(sprite.getLocalBounds().getCenter());
+	m_position = sf::Vector2(315.f, 245.f);
+	m_sprite.setPosition(m_position);
+	m_sprite.setScale(sf::Vector2f(0.09, 0.09));
+	m_sprite.setOrigin(m_sprite.getLocalBounds().getCenter());
 }
 
 void Food::generate(Snake avoidedObject) {
@@ -20,14 +20,21 @@ void Food::generate(Snake avoidedObject) {
 		isValidPosition = true;
 		{
 			while (index != avoidedObject.m_headIndex && isValidPosition) {
-				if (abs(avoidedObject.m_bodyArray[index].x - randomPosition.x) < 5 && abs(avoidedObject.m_bodyArray[index].y - randomPosition.y) < 5)
-				{
+				float xPointsTooClose = abs(avoidedObject.m_bodyPositionsArray[index].x - randomPosition.x) < EPSILON_FOR_PIXELS;
+				float yPointsTooClose = abs(avoidedObject.m_bodyPositionsArray[index].y - randomPosition.y) < EPSILON_FOR_PIXELS;
+
+				if (xPointsTooClose && yPointsTooClose)
 					isValidPosition = false;
-				}
-					index = (index + 1) % MAXSIZE;
+				
+				index = (index + 1) % MAXSIZE;
 			}
 		}
 	}
-	position = randomPosition;
-	sprite.setPosition(position);
+	m_position = randomPosition;
+	m_sprite.setPosition(m_position);
+}
+
+
+void Food::render(sf::RenderWindow& window) {
+	window.draw(m_sprite);
 }
