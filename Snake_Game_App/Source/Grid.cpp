@@ -1,25 +1,27 @@
 #include "Grid.h"
+#include "Wall.h"
+#include "Snake.h"
 #include <random>
 #include<iostream>
+#include<typeinfo>
 
-std::array<sf::Vector2f, 14 * 12> Grid::GRID;
-
+std::unordered_map<sf::Vector2f, Core::Object*, Vector2fHash> Grid::GRID;
 void Grid::initializeGrid() {
 	for (int i = 0; i < WIDTH; ++i) {
-		for (int j = 0; j < HEIGHT; ++j) 
-			GRID[i + j * WIDTH] = sf::Vector2f(i * CELL_SIZE + CELL_SIZE / 2.0f, j * CELL_SIZE + CELL_SIZE / 2.0f);
+		for (int j = 0; j < HEIGHT; ++j) {
+			sf::Vector2f currentPos = { i * CELL_SIZE + CELL_SIZE / 2.0f, j * CELL_SIZE + CELL_SIZE / 2.0f };
+			if (i == 0 || j == 0 || i == Grid::WIDTH - 1 || j == Grid::HEIGHT - 1) {
+				GRID[currentPos] = new Wall(currentPos);
+			}
+			else {
+				GRID[currentPos] = nullptr;
+			}
+		}
 	}
 }
 
 bool Grid::isValidPosition(sf::Vector2f position){
-	for (int i = 0; i < 14 * 12; i++)
-	{
-		bool xPointsTooClose = abs(GRID[i].x - position.x) < EPSILON_FOR_PIXELS;
-		bool yPointTooClose = abs(GRID[i].y - position.y) < EPSILON_FOR_PIXELS;
-		if (xPointsTooClose && yPointTooClose)
-			return true;
-	}
-	return false;
+	return GRID.contains(position);
 }
 
 sf::Vector2f Grid::generateRandomPosition() {
@@ -33,5 +35,5 @@ sf::Vector2f Grid::generateRandomPosition() {
 	std::uniform_int_distribution<> Ydistributor(yFirstValidSquare, yLastValidSquare);
 	int x = Xdistributor(generator);
 	int y = Ydistributor(generator);
-	return GRID[x + y * WIDTH];
+	return {x * CELL_SIZE + CELL_SIZE / 2.f, y * CELL_SIZE + CELL_SIZE / 2.f };
 }

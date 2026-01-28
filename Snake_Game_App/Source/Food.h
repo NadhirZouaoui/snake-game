@@ -4,15 +4,10 @@
 #include "Grid.h"
 #include "Snake.h"
 #include"constants.h"
-class Food
-{
-public:
-	sf::Vector2f m_position;
-	sf::Texture m_texture;
-	sf::Sprite m_sprite;
+class Food : public Core::imageObject{
+
 public:
 	Food();
-	void generate(Snake snake);
-	void render(sf::RenderWindow& window);
+	void generate();
 };
 

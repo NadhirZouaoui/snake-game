@@ -3,6 +3,15 @@
 #include <iostream>
 
 
+
+    Core::Object::Object(){
+        m_position;
+    }
+
+    sf::Vector2f Core::Object::getPosition(){
+        return m_position;
+    }
+
     // class textObject Definition:
     Core::TextObject::TextObject(std::string fontUrl, std::string message, float size, sf::Vector2f position, sf::Color color) :
         m_fontObject(sf::Font(fontUrl)),
@@ -30,6 +39,7 @@
         m_sprite.setOrigin(m_sprite.getLocalBounds().getCenter());
         m_sprite.setScale(scale);
         m_sprite.setPosition(position);
+        m_position = position;
     }
 
 

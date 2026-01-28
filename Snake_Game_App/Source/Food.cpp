@@ -1,40 +1,21 @@
 #include "Food.h"
+#include "Snake.h"
 #include<iostream>
 #include<cmath>
 Food::Food() :
-	m_texture("ressources/food.png"),
-	m_sprite(m_texture)
+	Core::imageObject("ressources/food.png", sf::Vector2f(0.09, 0.09), sf::Vector2(315.f, 245.f))
 {
-	m_position = sf::Vector2(315.f, 245.f);
-	m_sprite.setPosition(m_position);
-	m_sprite.setScale(sf::Vector2f(0.09, 0.09));
-	m_sprite.setOrigin(m_sprite.getLocalBounds().getCenter());
+	Grid::GRID[m_position] = this;
 }
 
-void Food::generate(Snake avoidedObject) {
-	bool isValidPosition = false;
-	sf::Vector2f randomPosition;
-	while (!isValidPosition) {
+void Food::generate() {
+	sf::Vector2f randomPosition = Grid::generateRandomPosition();
+	while (Grid::GRID[randomPosition] != nullptr) {
 		randomPosition = Grid::generateRandomPosition();
-		int index = avoidedObject.m_tailIndex;
-		isValidPosition = true;
-		{
-			while (index != avoidedObject.m_headIndex && isValidPosition) {
-				float xPointsTooClose = abs(avoidedObject.m_bodyPositionsArray[index].x - randomPosition.x) < EPSILON_FOR_PIXELS;
-				float yPointsTooClose = abs(avoidedObject.m_bodyPositionsArray[index].y - randomPosition.y) < EPSILON_FOR_PIXELS;
-
-				if (xPointsTooClose && yPointsTooClose)
-					isValidPosition = false;
-				
-				index = (index + 1) % MAXSIZE;
-			}
-		}
 	}
+	Grid::GRID[m_position] = nullptr;
 	m_position = randomPosition;
 	m_sprite.setPosition(m_position);
+	Grid::GRID[m_position] = this;
 }
 
-
-void Food::render(sf::RenderWindow& window) {
-	window.draw(m_sprite);
-}

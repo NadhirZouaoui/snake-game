@@ -7,7 +7,18 @@
 
 class Core {
 public:
-    class TextObject
+	class Object
+	{
+	public:
+		sf::Vector2f m_position;
+
+	public:
+		Object();
+		virtual sf::Vector2f getPosition();
+	};
+
+
+    class TextObject : public Object
     {
     public:
         sf::Font m_fontObject;
@@ -21,7 +32,7 @@ public:
 
 
 
-	class imageObject
+	class imageObject : public Object
 	{
 	public:
 		sf::Texture m_texture;
